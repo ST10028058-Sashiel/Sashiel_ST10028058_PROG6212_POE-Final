@@ -5,31 +5,41 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Sashiel_ST10028058_PROG6212_Part2</title>
+
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<body>
+<body style="background: url('/images/pexels-pixabay-268533.jpg') no-repeat center center fixed;
+             background-size: cover; min-height: 100vh;">
+    <!-- Header -->
     <header>
-        <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">CMCS</a>
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    CMCS
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                         aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             if (User.IsInRole("Manager") || User.IsInRole("Co-ordinator"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="AppRoles" asp-action="Index">Roles</a>
+                                    <a class="nav-link" asp-area="" asp-controller="AppRoles" asp-action="Index">
+                                        Roles
+                                    </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="ViewPendingClaims">
@@ -37,13 +47,18 @@
                                     </a>
                                 </li>
                             }
+
                             if (User.IsInRole("Lecturer"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="SubmitClaim">Submit a Claim</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="SubmitClaim">
+                                        Submit a Claim
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="TrackClaims">Track your Claims</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="TrackClaims">
+                                        Track your Claims
+                                    </a>
                                 </li>
                             }
                         }
@@ -55,21 +70,26 @@
         </nav>
     </header>
 
+    <!-- Main Content -->
     <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top text-center py-3 mt-4">
+    <!-- Footer -->
+    <footer class="border-top text-center py-3 mt-4 bg-white shadow-sm">
         <div class="container">
-            <small>
+            <small class="text-muted">
                 &copy; 2024 - Sashiel_ST10028058_PROG6212_Part2 -
-                <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none">
+                    Privacy
+                </a>
             </small>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

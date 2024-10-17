@@ -1,21 +1,45 @@
 ﻿@page
-@model LogoutModel
+@model Sashiel_ST10028058_PROG6212_Part2.Areas.Identity.Pages.Account.LogoutModel
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = "Logout";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-            </form>
-        }
-        else
-        {
-            <p>You have successfully logged out of the application.</p>
-        }
-    }
-</header>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logout - CMCS</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body style="background: url('/images/pexels-pixabay-268533.jpg') no-repeat center center fixed;
+             background-size: cover; min-height: 100vh;">
+
+    <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="card shadow-lg p-4 text-center" style="width: 400px; background-color: rgba(255, 255, 255, 0.8);">
+            <div class="card-body">
+                <h2 class="mb-4">Confirm Logout</h2>
+
+                <p class="mb-4">Are you sure you want to log out?</p>
+
+                <form method="post">
+                    <button type="submit" class="btn btn-danger w-100 mb-2">Logout</button>
+                </form>
+
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-secondary w-100">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
