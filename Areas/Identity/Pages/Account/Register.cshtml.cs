@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 using Sashiel_ST10028058_PROG6212_Part2.Models;
 
 
-namespace ST10028058_PROG6212_POE_Part2.Areas.Identity.Pages.Account
+namespace Sashiel_ST10028058_PROG6212_POE_Part2.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
