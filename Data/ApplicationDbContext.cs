@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Sashiel_ST10028058_PROG6212_Part2.Models;
 
 namespace Sashiel_ST10028058_PROG6212_Part2.Data
 {
@@ -9,5 +10,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Data
             : base(options)
         {
         }
+
+        public DbSet<User> User { get; set; }
     }
 }
