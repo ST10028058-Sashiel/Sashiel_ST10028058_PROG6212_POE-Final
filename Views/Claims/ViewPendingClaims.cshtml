@@ -2,57 +2,75 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pending Claims for Approval</title>
+
+  
+    
 </head>
-<body>
-    <h2>Pending Claims for Approval</h2>
 
-    @if (Model != null && Model.Count() > 0)
-    {
-        <table>
-            <thead>
-                <tr>
-                    <th>Lecturer Name</th>
-                    <th>Hours Worked</th>
-                    <th>Hourly Rate</th>
-                    <th>Notes</th>
-                    <th>Document</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var claim in Model)
-                {
-                    <tr>
-                        <td>@claim.LecturerName</td>
-                        <td>@claim.HoursWorked</td>
-                        <td>@claim.HourlyRate</td>
-                        <td>@claim.Notes</td>
-                        <td>
-                            <a href="@claim.SupportingDocumentPath" target="_blank">View Document</a>
-                        </td>
-                        <td>
-                            <form method="post" action="/Claims/ApproveClaim" style="display:inline-block;">
-                                <input type="hidden" name="id" value="@claim.ClaimId" />
-                                <button type="submit">Approve</button>
-                            </form>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Pending Claims for Approval</h2>
 
-                            <form method="post" action="/Claims/RejectClaim" style="display:inline-block;">
-                                <input type="hidden" name="id" value="@claim.ClaimId" />
-                                <button type="submit">Reject</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>No pending claims to display.</p>
-    }
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Lecturer Name</th>
+                            <th>Hours Worked</th>
+                            <th>Hourly Rate</th>
+                            <th>Notes</th>
+                            <th>Document</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var claim in Model)
+                        {
+                            <tr>
+                                <td>@claim.LecturerName</td>
+                                <td>@claim.HoursWorked</td>
+                                <td>@claim.HourlyRate.ToString("C")</td>
+                                <td>@claim.Notes</td>
+                                <td>
+                                    <a href="@claim.SupportingDocumentPath" target="_blank" class="btn btn-info btn-sm">
+                                        View Document
+                                    </a>
+                                </td>
+                                <td>
+                                    <form method="post" action="/Claims/ApproveClaim" class="d-inline">
+                                        <input type="hidden" name="id" value="@claim.ClaimId" />
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            Approve
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="/Claims/RejectClaim" class="d-inline">
+                                        <input type="hidden" name="id" value="@claim.ClaimId" />
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center" role="alert">
+                No pending claims to display.
+            </div>
+        }
+    </div>
 </body>
+
 </html>

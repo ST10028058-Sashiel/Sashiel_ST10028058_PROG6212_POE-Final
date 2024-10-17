@@ -2,45 +2,81 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Track Your Claims</title>
+
+    <!-- Link to the provided Lux theme CSS -->
+    <link rel="stylesheet" href="/path/to/bootstrap.min (1).css" />
 </head>
-<body>
-    <h2>Track Your Claims</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Lecturer Name</th>
-                <th>Hours Worked</th>
-                <th>Hourly Rate</th>
-                <th>Notes</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var claim in Model)
-            {
-                <tr>
-                    <td>@claim.LecturerName</td>
-                    <td>@claim.HoursWorked</td>
-                    <td>@claim.HourlyRate</td>
-                    <td>@claim.Notes</td>
-                    <td>@claim.Status</td>
-                    <td>
-                        @if (User.IsInRole("Manager") || User.IsInRole("Co-ordinator"))
-                        {
-                            <form asp-action="DeleteClaim" method="post">
-                                <input type="hidden" name="id" value="@claim.ClaimId" />
-                                <button type="submit">Delete</button>
-                            </form>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Track Your Claims</h2>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Lecturer Name</th>
+                        <th>Hours Worked</th>
+                        <th>Hourly Rate</th>
+                        <th>Notes</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var claim in Model)
+                    {
+                        <tr>
+                            <td>@claim.LecturerName</td>
+                            <td>@claim.HoursWorked</td>
+                            <td>@claim.HourlyRate</td>
+                            <td>@claim.Notes</td>
+                            <td>
+                                <span class="badge @GetStatusBadgeClass(claim.Status)">
+                                    @claim.Status
+                                </span>
+                            </td>
+                            <td>
+                                @if (User.IsInRole("Manager") || User.IsInRole("Co-ordinator"))
+                                {
+                                    <form asp-action="DeleteClaim" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@claim.ClaimId" />
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this claim?');
+        }
+    </script>
 </body>
+
 </html>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Approved" => "bg-success text-white",
+            "Pending" => "bg-warning text-dark",
+            "Rejected" => "bg-danger text-white",
+            _ => "bg-secondary text-white"
+        };
+    }
+}
