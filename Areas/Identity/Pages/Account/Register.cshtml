@@ -1,6 +1,8 @@
 ﻿@page
 @model Sashiel_ST10028058_PROG6212_POE_Part2.Areas.Identity.Pages.Account.RegisterModel
+
 @{
+    // Set the page title
     ViewData["Title"] = "Register";
 }
 
@@ -12,59 +14,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - CMCS</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS for styling and layout -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
 <body style="background: url('/images/pexels-pixabay-268533.jpg') no-repeat center center fixed;
              background-size: cover; min-height: 100vh;">
-
+    <!-- Full-page container to center-align content -->
     <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+
+        <!-- Card to hold the registration form -->
         <div class="card shadow-lg p-4" style="width: 500px; background-color: rgba(255, 255, 255, 0.85);">
             <div class="card-body">
+
+                <!-- Form title -->
                 <h2 class="text-center mb-4">Register</h2>
 
+                <!-- Registration form -->
                 <form method="post">
+
+                    <!-- First Name input field -->
                     <div class="form-group mb-3">
                         <label for="Firstname" class="form-label">First Name</label>
                         <input type="text" class="form-control" id="Firstname" asp-for="Input.Firstname" required />
                         <span asp-validation-for="Input.Firstname" class="text-danger"></span>
                     </div>
 
+                    <!-- Last Name input field -->
                     <div class="form-group mb-3">
                         <label for="Lastname" class="form-label">Last Name</label>
                         <input type="text" class="form-control" id="Lastname" asp-for="Input.Lastname" required />
                         <span asp-validation-for="Input.Lastname" class="text-danger"></span>
                     </div>
 
+                    <!-- Email input field -->
                     <div class="form-group mb-3">
                         <label for="Email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="Email" asp-for="Input.Email" required />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
+                    <!-- Password input field -->
                     <div class="form-group mb-3">
                         <label for="Password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="Password" asp-for="Input.Password" required />
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
+                    <!-- Confirm Password input field -->
                     <div class="form-group mb-3">
                         <label for="ConfirmPassword" class="form-label">Confirm Password</label>
                         <input type="password" class="form-control" id="ConfirmPassword" asp-for="Input.ConfirmPassword" required />
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
 
+                    <!-- Role selection dropdown -->
                     <div class="form-group mb-3">
                         <label for="Role" class="form-label">Select Role</label>
                         <select class="form-control" id="Role" asp-for="Input.Role" asp-items="Model.Input.RoleList"></select>
                         <span asp-validation-for="Input.Role" class="text-danger"></span>
                     </div>
 
+                    <!-- Register button -->
                     <button type="submit" class="btn btn-primary w-100">Register</button>
                 </form>
 
+                <!-- Link to Login page -->
                 <div class="text-center mt-3">
                     <a asp-page="./Login">Already have an account? Login here</a>
                 </div>
@@ -72,8 +88,27 @@
         </div>
     </div>
 
+    <!-- jQuery and Bootstrap JS for functionality -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
+@* //# Assistance provided by ChatGPT
+//# Code and support generated with the help of OpenAI's ChatGPT.
+// code attribution
+// W3schools
+//https://www.w3schools.com/cs/index.php
+
+// code attribution
+//Bootswatch
+//https://bootswatch.com/
+
+// code attribution
+// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0&tabs=visual-studio
+
+// code attribution
+// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-8.0&tabs=visual-studio
+
+// code attribution
+// https://youtu.be/qvsWwwq2ynE?si=vwx2O4bCAFDFh5m_ *@
