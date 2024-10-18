@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Sashiel_ST10028058_PROG6212_Part2</title>
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -30,7 +29,18 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-controller="Claims" asp-action="SubmitClaim">
+								Submit a Claim
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-controller="Claims" asp-action="TrackClaims">
+								Track your Claims
+							</a>
+						</li>
 
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -46,21 +56,9 @@
                                         Approve Claims
                                     </a>
                                 </li>
+
                             }
 
-                            if (User.IsInRole("Lecturer"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="SubmitClaim">
-                                        Submit a Claim
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="TrackClaims">
-                                        Track your Claims
-                                    </a>
-                                </li>
-                            }
                         }
                     </ul>
 

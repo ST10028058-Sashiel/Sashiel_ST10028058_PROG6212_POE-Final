@@ -12,20 +12,19 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
         private readonly long _maxFileSize = 5 * 1024 * 1024;
         private readonly string[] _allowedExtensions = { ".pdf", ".docx", ".xlsx" };
 
-
         public ClaimsController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-
+        [Authorize(Roles ="Lecturer")]
         [HttpGet]
         public IActionResult SubmitClaim()
         {
             return View();
         }
 
-        [Authorize(Roles = "Lecturer")]
+ 
         [HttpPost]
         public async Task<IActionResult> SubmitClaim(Claim claim, IFormFile document)
         {
@@ -143,6 +142,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
         }
 
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> TrackClaims()
         {
@@ -176,7 +176,5 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
                 return View("Error");
             }
         }
-
-
     }
 }
