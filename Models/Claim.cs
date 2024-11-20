@@ -28,8 +28,14 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Models
         [Range(0, double.MaxValue)]
         public double HourlyRate { get; set; }
 
-        // Optional notes field to provide additional information about the claim.
-        // This field will be displayed as 'Additional Notes' on the form.
+        // Calculate FinalPayment dynamically
+        public decimal FinalPayment
+        {
+            get
+            {
+                return (decimal)(HoursWorked * HourlyRate);
+            }
+        }
         [Display(Name = "Additional Notes")]
         public string Notes { get; set; }
 
@@ -42,6 +48,8 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Models
         // This field is required and stores the location of the uploaded file.
         [Required]
         public string? SupportingDocumentPath { get; set; }
+
+        public string UserId { get; set; }
     }
 }
 //# Assistance provided by ChatGPT
