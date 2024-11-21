@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Sashiel_ST10028058_PROG6212_Part2.Data;
-using Sashiel_ST10028058_PROG6212_Part2.Models;
+using AppClaim = Sashiel_ST10028058_PROG6212_Part2.Models.Claim;
+using OfficeOpenXml;
+using System.ComponentModel;
+using LicenseContext = OfficeOpenXml.LicenseContext;
+
 
 namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
 {
-    // Controller for managing claims-related operations
     public class ClaimsController : Controller
     {
-        // Injected ApplicationDbContext for database access
         private readonly ApplicationDbContext _dbContext;
 
-        // Max file size limit (5 MB) and allowed file extensions for uploads
         private readonly long _maxFileSize = 5 * 1024 * 1024;
         private readonly string[] _allowedExtensions = { ".pdf", ".docx", ".xlsx" };
 
-        // Constructor to inject the database context
         public ClaimsController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -32,12 +33,10 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
 
         // POST: Handle the submission of a new claim with a supporting document
         [HttpPost]
-        public async Task<IActionResult> SubmitClaim(Claim claim, IFormFile document)
+        public async Task<IActionResult> SubmitClaim(AppClaim claim, IFormFile document)
         {
-            // Check if a file was uploaded and is not empty
             if (document != null && document.Length > 0)
             {
-                // Validate file extension
                 var fileExtension = Path.GetExtension(document.FileName).ToLower();
                 if (!_allowedExtensions.Contains(fileExtension))
                 {
@@ -45,35 +44,32 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
                     return View(claim);
                 }
 
-                // Define the path for file uploads
                 var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
                 if (!Directory.Exists(uploadsPath))
                 {
-                    Directory.CreateDirectory(uploadsPath); // Create the directory if it doesn't exist
+                    Directory.CreateDirectory(uploadsPath);
                 }
 
-                // Save the uploaded file to the server
                 var filePath = Path.Combine(uploadsPath, document.FileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await document.CopyToAsync(stream); // Copy the uploaded file to the destination
+                    await document.CopyToAsync(stream);
                 }
 
-                // Store the file path in the claim object
                 claim.SupportingDocumentPath = $"/uploads/{document.FileName}";
             }
             else
             {
-                // Add a model error if no document was uploaded
                 ModelState.AddModelError("document", "Please upload a supporting document.");
                 return View(claim);
             }
 
-            // Add the claim to the database and save changes
+            // Set the UserId for the logged-in user
+            claim.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             _dbContext.Claims.Add(claim);
             await _dbContext.SaveChangesAsync();
 
-            // Redirect to the ClaimSubmitted view
             return RedirectToAction("ClaimSubmitted");
         }
 
@@ -83,6 +79,25 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
             return View();
         }
 
+        // GET: Track all claims for the logged-in lecturer
+        [Authorize(Roles = "Lecturer")]
+        [HttpGet]
+        public async Task<IActionResult> TrackClaims()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userClaims = await _dbContext.Claims.Where(c => c.UserId == userId).ToListAsync();
+                return View(userClaims);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while fetching your claims. Please try again later.");
+                Console.WriteLine(ex.Message);
+                return View("Error");
+            }
+        }
+
         // GET: View all pending claims (restricted to Co-ordinators and Managers)
         [Authorize(Roles = "Co-ordinator,Manager")]
         [HttpGet]
@@ -90,32 +105,29 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
         {
             try
             {
-                // Retrieve pending claims from the database
                 var pendingClaims = await _dbContext.Claims.Where(c => c.Status == "Pending").ToListAsync();
                 return View(pendingClaims);
             }
             catch (Exception ex)
             {
-                // Handle any errors during data retrieval
                 ModelState.AddModelError(string.Empty, "An error occurred while fetching the claims. Please try again later.");
                 Console.WriteLine(ex.Message);
                 return View("Error");
             }
         }
 
-        // POST: Approve a specific claim (restricted to Co-ordinators and Managers)
+        // POST: Approve a specific claim
         [Authorize(Roles = "Co-ordinator,Manager")]
         [HttpPost]
         public async Task<IActionResult> ApproveClaim(int id)
         {
             try
             {
-                // Find the claim by its ID
                 var claim = await _dbContext.Claims.FindAsync(id);
                 if (claim != null)
                 {
-                    claim.Status = "Approved"; // Update the claim status
-                    await _dbContext.SaveChangesAsync(); // Save changes to the database
+                    claim.Status = "Approved";
+                    await _dbContext.SaveChangesAsync();
                 }
                 else
                 {
@@ -130,7 +142,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
             return RedirectToAction("ViewPendingClaims");
         }
 
-        // POST: Reject a specific claim (restricted to Co-ordinators and Managers)
+        // POST: Reject a specific claim
         [Authorize(Roles = "Co-ordinator,Manager")]
         [HttpPost]
         public async Task<IActionResult> RejectClaim(int id)
@@ -140,7 +152,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
                 var claim = await _dbContext.Claims.FindAsync(id);
                 if (claim != null)
                 {
-                    claim.Status = "Rejected"; // Update the claim status
+                    claim.Status = "Rejected";
                     await _dbContext.SaveChangesAsync();
                 }
                 else
@@ -156,26 +168,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
             return RedirectToAction("ViewPendingClaims");
         }
 
-        // GET: Track all claims (restricted to authenticated users)
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> TrackClaims()
-        {
-            try
-            {
-                // Retrieve all claims from the database
-                var allClaims = await _dbContext.Claims.ToListAsync();
-                return View(allClaims);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, "An error occurred while fetching the claims. Please try again later.");
-                Console.WriteLine(ex.Message);
-                return View("Error");
-            }
-        }
-
-        // POST: Delete a specific claim (restricted to Co-ordinators and Managers)
+        // POST: Delete a specific claim
         [Authorize(Roles = "Co-ordinator,Manager")]
         [HttpPost]
         public async Task<IActionResult> DeleteClaim(int id)
@@ -183,8 +176,8 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
             var claim = await _dbContext.Claims.FindAsync(id);
             if (claim != null)
             {
-                _dbContext.Claims.Remove(claim); // Remove the claim from the database
-                await _dbContext.SaveChangesAsync(); // Save changes
+                _dbContext.Claims.Remove(claim);
+                await _dbContext.SaveChangesAsync();
                 return RedirectToAction("TrackClaims");
             }
             else
@@ -193,23 +186,106 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
                 return View("Error");
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GenerateReport()
+        {
+            var claims = await _dbContext.Claims.ToListAsync();
+            return View(claims);
+        }
+
+        public IActionResult GeneratePdfReport()
+        {
+            try
+            {
+                // Fetch approved claims from the database
+                var claims = _dbContext.Claims.Where(c => c.Status == "Approved").ToList();
+
+                // Create a temporary file path for the PDF
+                string filePath = Path.Combine(Path.GetTempPath(), "ApprovedClaimsReport.pdf");
+
+                // Write report contents
+                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    using (var writer = new StreamWriter(fileStream))
+                    {
+                        writer.WriteLine("Approved Claims Report");
+                        writer.WriteLine($"Generated on: {DateTime.Now:g}");
+                        writer.WriteLine(new string('-', 40));
+
+                        // Add headers
+                        writer.WriteLine($"{"Lecturer Name",-20} {"Hours Worked",-15} {"Hourly Rate",-15} {"Total Payment",-15}");
+
+                        // Add claim details
+                        foreach (var claim in claims)
+                        {
+                            writer.WriteLine($"{claim.LecturerName,-20} {claim.HoursWorked,-15} {claim.HourlyRate,-15:C} {claim.FinalPayment,-15:C}");
+                        }
+
+                        writer.WriteLine(new string('-', 40));
+                    }
+                }
+
+                // Return the PDF file for download
+                byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+                return File(fileBytes, "application/pdf", "ApprovedClaimsReport.pdf");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating PDF: {ex.Message}");
+                return View("Error");
+            }
+        }
+
+
+        public IActionResult GenerateExcelReport()
+        {
+            try
+            {
+                // Set the license context for EPPlus
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                using (var package = new ExcelPackage())
+                {
+                    var worksheet = package.Workbook.Worksheets.Add("Approved Claims Report");
+
+                    // Add headers
+                    worksheet.Cells[1, 1].Value = "Lecturer Name";
+                    worksheet.Cells[1, 2].Value = "Hours Worked";
+                    worksheet.Cells[1, 3].Value = "Hourly Rate";
+                    worksheet.Cells[1, 4].Value = "Total Payment";
+
+                    // Fetch approved claims
+                    var claims = _dbContext.Claims.Where(c => c.Status == "Approved").ToList();
+
+                    // Add data rows
+                    int row = 2;
+                    foreach (var claim in claims)
+                    {
+                        worksheet.Cells[row, 1].Value = claim.LecturerName;
+                        worksheet.Cells[row, 2].Value = claim.HoursWorked;
+                        worksheet.Cells[row, 3].Value = claim.HourlyRate;
+                        worksheet.Cells[row, 4].Value = (double)claim.FinalPayment;
+                        row++;
+                    }
+
+                    // Auto-fit columns for better formatting
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                    // Generate the Excel file in memory
+                    var excelData = package.GetAsByteArray();
+
+                    // Return the file for download
+                    return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ApprovedClaimsReport.xlsx");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating Excel: {ex.Message}");
+                return View("Error");
+            }
+        }
+
     }
 }
-//# Assistance provided by ChatGPT
-//# Code and support generated with the help of OpenAI's ChatGPT.
-// code attribution
-// W3schools
-//https://www.w3schools.com/cs/index.php
-
-// code attribution
-//Bootswatch
-//https://bootswatch.com/
-
-// code attribution
-// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0&tabs=visual-studio
-
-// code attribution
-// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-8.0&tabs=visual-studio
-
-// code attribution
-// https://youtu.be/qvsWwwq2ynE?si=vwx2O4bCAFDFh5m_

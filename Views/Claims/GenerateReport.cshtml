@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Sashiel_ST10028058_PROG6212_Part2.Models.Claim>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Claims Report</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Claims Report</h2>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Lecturer Name</th>
+                            <th>Hours Worked</th>
+                            <th>Hourly Rate</th>
+                            <th>Final Payment</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th>Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var claim in Model)
+                        {
+                            <tr>
+                                <td>@claim.ClaimId</td>
+                                <td>@claim.LecturerName</td>
+                                <td>@claim.HoursWorked</td>
+                                <td>@claim.HourlyRate.ToString("C")</td>
+                                <td>@claim.FinalPayment.ToString("C")</td>
+                                <td>
+                                    @if (claim.Status == "Approved")
+                                    {
+                                        <span class="text-success">@claim.Status</span>
+                                    }
+                                    else if (claim.Status == "Rejected")
+                                    {
+                                        <span class="text-danger">@claim.Status</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-warning">@claim.Status</span>
+                                    }
+                                </td>
+                                <td>@claim.Notes</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(claim.SupportingDocumentPath))
+                                    {
+                                        <a href="@claim.SupportingDocumentPath" target="_blank"
+                                           class="btn btn-info btn-sm" aria-label="View Supporting Document">
+                                            View Document
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No Document</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center" role="alert">
+                No claims available to display in the report.
+            </div>
+        }
+
+        <!-- Add buttons below the displayed table -->
+        <div class="text-center mt-4">
+            <a href="/Claims/GeneratePdfReport" class="btn btn-primary m-2">Download PDF Report</a>
+            <a href="/Claims/GenerateExcelReport" class="btn btn-success m-2">Download Excel Report</a>
+        </div>
+
+    </div>
+</body>
+
+</html>
