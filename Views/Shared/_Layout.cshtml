@@ -44,7 +44,7 @@
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            if (User.IsInRole("Manager") || User.IsInRole("Co-ordinator"))
+                            if (User.IsInRole("Manager") || User.IsInRole("Co-ordinator") || User.IsInRole("HR"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="AppRoles" asp-action="Index">
@@ -54,6 +54,22 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="ViewPendingClaims">
                                         Approve Claims
+                                    </a>
+                                </li>
+
+                            }
+
+                        }
+
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("HR"))
+                            {
+                                
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Claims" asp-action="GenerateReport">
+                                        HR Report
                                     </a>
                                 </li>
 
