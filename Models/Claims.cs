@@ -4,7 +4,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Models
 {
     // The Claim class represents a claim submission made by a lecturer.
     // It includes attributes for tracking the claim details and associated metadata.
-    public class Claim
+    public class Claims
     {
         // Primary key for the Claim entity.
         [Key]
@@ -43,6 +43,9 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Models
         // Default value is 'Pending'. This field is required.
         [Required]
         public string Status { get; set; } = "Pending";
+
+
+        public string DeclinedReason { get; set; }
 
         // Path to the supporting document uploaded for the claim.
         // This field is required and stores the location of the uploaded file.

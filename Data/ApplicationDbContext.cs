@@ -21,7 +21,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Data
 
         // DbSet for the 'Claim' model. This represents the 'Claims' table in the database.
         // It will handle all claims-related operations through Entity Framework.
-        public DbSet<Claim> Claims { get; set; }
+        public DbSet<Claims> Claims { get; set; }
     }
 }
 //# Assistance provided by ChatGPT

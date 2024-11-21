@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Sashiel_ST10028058_PROG6212_Part2.Models.Claim>
+﻿@model IEnumerable<Sashiel_ST10028058_PROG6212_Part2.Models.Claims>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,37 +20,48 @@
             <table class="table table-hover table-bordered">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Lecturer Name</th>
-                        <th>Hours Worked</th>
-                        <th>Hourly Rate</th>
-                        <th>Notes</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        <th scope="col">Lecturer Name</th>
+                        <th scope="col">Hours Worked</th>
+                        <th scope="col">Hourly Rate</th>
+                        <th scope="col">Notes</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var claim in Model)
+                    @if (Model.Any())
+                    {
+                        @foreach (var claim in Model)
+                        {
+                            <tr>
+                                <td>@claim.LecturerName</td>
+                                <td>@claim.HoursWorked</td>
+                                <td>@string.Format("{0:C}", claim.HourlyRate)</td>
+                                <td>@claim.Notes</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(claim.Status)">
+                                        @claim.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (User.IsInRole("Manager") || User.IsInRole("Co-ordinator"))
+                                    {
+                                        <form asp-action="DeleteClaim" method="post" class="d-inline" onsubmit="return confirmDelete();">
+                                            <input type="hidden" name="id" value="@claim.ClaimId" />
+                                            <button type="submit" class="btn btn-danger btn-sm" aria-label="Delete claim">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@claim.LecturerName</td>
-                            <td>@claim.HoursWorked</td>
-                            <td>@claim.HourlyRate</td>
-                            <td>@claim.Notes</td>
-                            <td>
-                                <span class="badge @GetStatusBadgeClass(claim.Status)">
-                                    @claim.Status
-                                </span>
-                            </td>
-                            <td>
-                                @if (User.IsInRole("Manager") || User.IsInRole("Co-ordinator"))
-                                {
-                                    <form asp-action="DeleteClaim" method="post" class="d-inline">
-                                        <input type="hidden" name="id" value="@claim.ClaimId" />
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            Delete
-                                        </button>
-                                    </form>
-                                }
+                            <td colspan="6" class="text-center text-muted">
+                                No claims to display.
                             </td>
                         </tr>
                     }
@@ -75,26 +86,8 @@
         {
             "Approved" => "bg-success text-white",
             "Pending" => "bg-warning text-dark",
-            "Rejected" => "bg-danger text-white",
+            "Declined" => "bg-danger text-white",
             _ => "bg-secondary text-white"
         };
     }
 }
-@* //# Assistance provided by ChatGPT
-//# Code and support generated with the help of OpenAI's ChatGPT.
-// code attribution
-// W3schools
-//https://www.w3schools.com/cs/index.php
-
-// code attribution
-//Bootswatch
-//https://bootswatch.com/
-
-// code attribution
-// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0&tabs=visual-studio
-
-// code attribution
-// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-8.0&tabs=visual-studio
-
-// code attribution
-// https://youtu.be/qvsWwwq2ynE?si=vwx2O4bCAFDFh5m_ *@

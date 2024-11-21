@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Sashiel_ST10028058_PROG6212_Part2.Data;
-using AppClaim = Sashiel_ST10028058_PROG6212_Part2.Models.Claim;
+using AppClaim = Sashiel_ST10028058_PROG6212_Part2.Models.Claims;
 using OfficeOpenXml;
 using System.ComponentModel;
 using LicenseContext = OfficeOpenXml.LicenseContext;
@@ -67,11 +67,24 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Controllers
             // Set the UserId for the logged-in user
             claim.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            // Automation: Check claim criteria
+            if (claim.HourlyRate > 200 || claim.HoursWorked > 120)
+            {
+                claim.Status = "Declined"; // Automatically decline the claim
+                claim.DeclinedReason = "Hourly rate exceeds $200 or hours worked exceed 120.";
+            }
+            else
+            {
+                claim.Status = "Pending"; // Mark as pending for approval
+            }
+
+            // Save the claim to the database
             _dbContext.Claims.Add(claim);
             await _dbContext.SaveChangesAsync();
 
             return RedirectToAction("ClaimSubmitted");
         }
+
 
         // GET: Display a confirmation view after claim submission
         public IActionResult ClaimSubmitted()
