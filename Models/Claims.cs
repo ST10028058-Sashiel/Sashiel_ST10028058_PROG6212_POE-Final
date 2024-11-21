@@ -45,7 +45,7 @@ namespace Sashiel_ST10028058_PROG6212_Part2.Models
         public string Status { get; set; } = "Pending";
 
 
-        public string DeclinedReason { get; set; }
+        public string? DeclinedReason { get; set; }
 
         // Path to the supporting document uploaded for the claim.
         // This field is required and stores the location of the uploaded file.

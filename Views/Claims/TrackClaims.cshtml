@@ -23,6 +23,7 @@
                         <th scope="col">Lecturer Name</th>
                         <th scope="col">Hours Worked</th>
                         <th scope="col">Hourly Rate</th>
+                        <th scope="col">Salary Total</th>
                         <th scope="col">Notes</th>
                         <th scope="col">Status</th>
                         <th scope="col">Action</th>
@@ -37,6 +38,7 @@
                                 <td>@claim.LecturerName</td>
                                 <td>@claim.HoursWorked</td>
                                 <td>@string.Format("{0:C}", claim.HourlyRate)</td>
+                                <td>@string.Format("{0:C}", claim.FinalPayment)</td>
                                 <td>@claim.Notes</td>
                                 <td>
                                     <span class="badge @GetStatusBadgeClass(claim.Status)">
@@ -60,7 +62,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="6" class="text-center text-muted">
+                            <td colspan="7" class="text-center text-muted">
                                 No claims to display.
                             </td>
                         </tr>

@@ -7,9 +7,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pending Claims for Approval</title>
-
-  
-    
 </head>
 
 <body class="bg-light">
@@ -25,6 +22,7 @@
                             <th>Lecturer Name</th>
                             <th>Hours Worked</th>
                             <th>Hourly Rate</th>
+                            <th>Salary Total</th>
                             <th>Notes</th>
                             <th>Document</th>
                             <th>Actions</th>
@@ -37,6 +35,7 @@
                                 <td>@claim.LecturerName</td>
                                 <td>@claim.HoursWorked</td>
                                 <td>@claim.HourlyRate.ToString("C")</td>
+                                <td>@claim.FinalPayment.ToString("C")</td>
                                 <td>@claim.Notes</td>
                                 <td>
                                     <a href="@claim.SupportingDocumentPath" target="_blank" class="btn btn-info btn-sm">
@@ -74,21 +73,3 @@
 </body>
 
 </html>
-@* //# Assistance provided by ChatGPT
-//# Code and support generated with the help of OpenAI's ChatGPT.
-// code attribution
-// W3schools
-//https://www.w3schools.com/cs/index.php
-
-// code attribution
-//Bootswatch
-//https://bootswatch.com/
-
-// code attribution
-// https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0&tabs=visual-studio
-
-// code attribution
-// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-8.0&tabs=visual-studio
-
-// code attribution
-// https://youtu.be/qvsWwwq2ynE?si=vwx2O4bCAFDFh5m_ *@
